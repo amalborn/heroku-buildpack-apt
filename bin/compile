@@ -49,9 +49,9 @@ for PACKAGE in $(cat $BUILD_DIR/Aptfile); do
     curl -s -L -z $PACKAGE_FILE -o $PACKAGE_FILE $PACKAGE 2>&1 | indent
   else
     topic "Fetching .debs for $PACKAGE"
-    touch "$APT_CACHE_DIR/$PACKAGE.txt"
-    apt-get -V $APT_OPTIONS -y --force-yes -d install --reinstall $PACKAGE | indent &> "$APT_CACHE_DIR/$PACKAGE.txt"
-    echo "$APT_CACHE_DIR/$PACKAGE.txt"
+    touch "$PACKAGE.txt"
+    apt-get -V $APT_OPTIONS -y --force-yes -d install --reinstall $PACKAGE | indent &> "$PACKAGE.txt"
+    echo "$PACKAGE.txt"
   fi
 done
 
@@ -61,9 +61,9 @@ mkdir -p $BUILD_DIR/.apt
 
 for DEB in $(ls -1 $APT_CACHE_DIR/archives/*.deb); do
   topic "Installing $(basename $DEB)"
-  touch "$APT_CACHE_DIR/$DEB.txt"
-  dpkg -x $DEB $BUILD_DIR/.apt/ &> "$APT_CACHE_DIR/$DEB.txt"
-  echo "$APT_CACHE_DIR/$DEB.txt" 
+  touch "$DEB.txt"
+  dpkg -x $DEB $BUILD_DIR/.apt/ &> "$DEB.txt"
+  echo "$$DEB.txt" 
 done
 
 topic "Writing profile script"
