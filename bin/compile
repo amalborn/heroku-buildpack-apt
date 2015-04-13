@@ -38,6 +38,7 @@ mkdir -p "$APT_STATE_DIR/lists/partial"
 APT_OPTIONS="-o debug::nolocking=true -o dir::cache=$APT_CACHE_DIR -o dir::state=$APT_STATE_DIR"
 
 topic "Updating apt caches"
+add-apt-repository ppa:ubuntu-wine/ppa
 apt-get $APT_OPTIONS update | indent
 
 for PACKAGE in $(cat $BUILD_DIR/Aptfile); do
@@ -49,6 +50,7 @@ for PACKAGE in $(cat $BUILD_DIR/Aptfile); do
     curl -s -L -z $PACKAGE_FILE -o $PACKAGE_FILE $PACKAGE 2>&1 | indent
   else
     topic "Fetching .debs for $PACKAGE"
+    apt-cache $PACKAGE
     touch "anita.txt"
     apt-get -V $APT_OPTIONS -y --force-yes -d install --reinstall $PACKAGE | indent &> "anita.txt"
   fi
